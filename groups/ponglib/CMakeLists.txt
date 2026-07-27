@@ -4,14 +4,14 @@ list(FILTER SRC_FILES EXCLUDE REGEX ".*\\.m\\.cpp$")
 list(FILTER SRC_FILES EXCLUDE REGEX ".*\\.t\\.cpp$")
 
 # === Build Source files as libraries
-add_library(exlib STATIC ${SRC_FILES})
-target_include_directories(exlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(ponglib STATIC ${SRC_FILES})
+target_include_directories(ponglib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # === GoogleTest via FetchContent ===
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+  URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
 )
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
@@ -27,6 +27,6 @@ foreach(TEST_SRC ${TEST_SOURCES})
     get_filename_component(FILE_NAME ${TEST_SRC} NAME)
     string(REGEX REPLACE "\\.cpp$" "" TEST_NAME ${FILE_NAME}) # e.g., math.t.cpp -> math.t
     add_executable(${TEST_NAME} ${TEST_SRC})
-    target_link_libraries(${TEST_NAME} PRIVATE exlib gtest_main)
+    target_link_libraries(${TEST_NAME} PRIVATE ponglib gtest_main)
     gtest_discover_tests(${TEST_NAME})
 endforeach()

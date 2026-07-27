@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.14)
-project(example CXX C)
+cmake_minimum_required(VERSION 4.0.3)
+project(pong CXX C)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF) # Disables compiler-specific "shortcuts"
 enable_testing()
 
 add_subdirectory(src)
-add_subdirectory(groups/exlib)
+add_subdirectory(groups/ponglib)
 
 add_custom_target(
     check-format ALL
