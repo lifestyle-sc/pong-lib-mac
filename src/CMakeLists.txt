@@ -79,14 +79,47 @@ target_compile_options(project_strict_warnings INTERFACE
     >
 )
 
+# === RAYLIB via FetchContent ===
+include(FetchContent)
+
+# Pin ray lib to a specific version to avoid breaking changes.
+set(RAYLIB_VERSION 6.0)
+
+# Skip raylib's separate example programs
+set(BUILD_EXAMPLES OFF CACHE BOOL "Build raylib examples" FORCE)
+
+# Build dependencies that honour BUILD_SHARED_LIBS, including raylib,
+# as static libraries rather than separate shared-library files.
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
+
+FetchContent_Declare(
+  raylib
+  URL https://github.com/raysan5/raylib/archive/refs/tags/${RAYLIB_VERSION}.tar.gz
+  DOWNLOAD_EXTRACT_TIMESTAMP OFF
+)
+
+FetchContent_MakeAvailable(raylib)
+
 # === Main App ===
 add_executable(pong.tsk
 pong.m.cpp
 )
-target_link_libraries(pong.tsk PRIVATE ponglib project_strict_warnings)
+target_link_libraries(pong.tsk PRIVATE ponglib raylib project_strict_warnings)
 
 # ===  Apply knobs in one place
 apply_sanitizers(ponglib)
 apply_sanitizers(pong.tsk)
 apply_profiler(pong.tsk)
+
+# These are the frameworks that raylib needs on macOS. On other platforms, this is a no-op.
+if(APPLE)
+    target_link_libraries(
+      pong.tsk
+      PRIVATE
+      "-framework OpenGL"
+      "-framework Cocoa"
+      "-framework IOKit"
+      "-framework CoreAudio"
+      "-framework CoreVideo")
+endif()
 
